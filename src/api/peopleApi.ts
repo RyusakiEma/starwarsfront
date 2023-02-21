@@ -33,9 +33,10 @@ export const getPeople = async (page: number) => {
   }
 };
 
-export const GetCharacter = async (name: string) => {
+export const getCharacter = async (name: string) => {
   try {
     const { data } = await API.get<IPeopleResponse>(`people/?search=${name}`);
+
     await Promise.all(
       data.results.map(async (character) => {
         getCharacterId(character);
@@ -45,6 +46,25 @@ export const GetCharacter = async (name: string) => {
     );
 
     return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getCharacterByFilm = async (charactersUrl: string[]) => {
+  const characters: IPeople[] = [];
+  try {
+    await Promise.all(
+      charactersUrl.map(async (url) => {
+        const { data } = await axios.get<IPeople>(url);
+        const world = await getWorld(data.homeworld);
+        data.world = world;
+        getCharacterId(data);
+        characters.push(data);
+      })
+    );
+
+    return characters;
   } catch (error) {
     console.log(error);
   }

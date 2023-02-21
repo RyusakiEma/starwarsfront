@@ -19,11 +19,7 @@ const PageTemplate = ({ children }: Props) => {
           overflowX: "hidden",
         }}
       >
-        <SectionWrapper>
-          <SearchInput />
-
-          {children}
-        </SectionWrapper>
+        <SectionWrapper>{children}</SectionWrapper>
       </Box>
     </>
   );

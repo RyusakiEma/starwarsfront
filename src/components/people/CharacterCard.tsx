@@ -1,5 +1,7 @@
+import { useState } from "react";
+
 // Mui Imports
-import { Grid, Box, CircularProgress, Paper } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 
 import { IPeople } from "../../api/types";
 import { PeopleContainer, PersonName } from "./people.style";
@@ -9,15 +11,29 @@ interface Props {
 }
 
 const CharacterCard = ({ person }: Props) => {
+  const [showName, setShowName] = useState(false);
+
   return (
     <PeopleContainer>
-      <Paper elevation={4}>
+      <Paper
+        elevation={showName ? 4 : 0}
+        sx={{ backgroundColor: "transparent" }}
+      >
         <Box className='people-img-container'>
-          <img className='person-image' src={person.image} />
+          <img
+            className='person-image'
+            src={person.image}
+            onLoad={() => setShowName(true)}
+          />
         </Box>
-        <PersonName variant='h5' className='person-name'>
-          {person.name}
-        </PersonName>
+        {showName && (
+          <PersonName variant='h5' className='person-name'>
+            {person.name}
+            {person?.world && (
+              <Typography>Homeworld: {person.world.name}</Typography>
+            )}
+          </PersonName>
+        )}
       </Paper>
     </PeopleContainer>
   );
