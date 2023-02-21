@@ -20,11 +20,13 @@ interface Props {
 export default function SearchInput({ setPeople, setPage, getPeople }: Props) {
   const location = useLocation();
   const navigate = useNavigate();
+
   const [searchValue, setSearchValue] = useState(location.state?.name || "");
 
   const searchCharacter = async (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
+      localStorage.setItem("searchValue", searchValue);
       if (location.pathname.includes("character")) {
         navigate("/", { state: { name: searchValue } });
         return;
@@ -48,42 +50,44 @@ export default function SearchInput({ setPeople, setPage, getPeople }: Props) {
 
   return (
     <>
-      <Paper
-        component='form'
-        sx={{
-          p: "0.5rem 1rem",
-          mb: "1.5rem",
-          display: "flex",
-          alignItems: "center",
-          width: "100%",
-        }}
-      >
-        <IconButton sx={{ p: "10px" }}>
-          <SearchIcon />
-        </IconButton>
-        <InputBase
-          sx={{ ml: 1, flex: 1 }}
-          value={searchValue}
-          placeholder='Search character by name'
-          inputProps={{ "aria-label": "search character" }}
-          onChange={(e) => setSearchValue(e.target.value)}
-          onKeyDown={searchCharacter}
-        />
-
-        {searchValue.length > 0 && (
-          <IconButton
-            sx={{ p: "10px" }}
-            onClick={async () => {
-              if (getPeople) {
-                await getPeople();
-              }
-              setSearchValue("");
-            }}
-          >
-            <CloseIcon />
+      <Box sx={{ position: "relative" }}>
+        <Paper
+          component='form'
+          sx={{
+            p: "0.5rem 1rem",
+            mb: "1.5rem",
+            display: "flex",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
+          <IconButton sx={{ p: "10px" }}>
+            <SearchIcon />
           </IconButton>
-        )}
-      </Paper>
+          <InputBase
+            sx={{ ml: 1, flex: 1 }}
+            value={searchValue}
+            placeholder='Search character by name'
+            inputProps={{ "aria-label": "search character" }}
+            onChange={(e) => setSearchValue(e.target.value)}
+            onKeyDown={searchCharacter}
+          />
+
+          {searchValue.length > 0 && (
+            <IconButton
+              sx={{ p: "10px" }}
+              onClick={async () => {
+                if (getPeople) {
+                  await getPeople();
+                }
+                setSearchValue("");
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+          )}
+        </Paper>
+      </Box>
 
       {!location.pathname.includes("character") && (
         <Box mt={2} mb={2}>
